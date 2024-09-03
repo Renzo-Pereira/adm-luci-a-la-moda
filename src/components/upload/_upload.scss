@@ -1,0 +1,59 @@
+.contenedor-agregar{
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .foto {
+    margin: auto;
+    width: 258px;
+    height: 340px;
+    font-size: 10rem;
+    border-radius: 1rem;
+    border: green solid 0.1rem;
+    color: green;
+    background-color: transparent;
+    background-size: cover;
+    i {
+      p {
+        font-size: 1.5rem;
+        color: black;
+      }
+    }
+  }
+  .inputs {
+    width: 258px;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-family: "Montserrat";
+    font-weight: 300;
+    font-style: normal;
+    border: green solid 0.1rem;
+    border-radius: 1rem;
+    button, input, select, textarea, label{
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .contenedor-agregar{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    .foto {
+      margin: 0;
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+}

@@ -1,10 +1,12 @@
-main{
-    padding-left: 5rem;
-    padding-right: 5rem;
+.home{
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
     article{
-        border: 0.1rem solid rgb(0, 255, 0, 40%);
+        width: 258px;
+        height: 340px;
+        border: green solid 0.1rem;
         border-radius: 1rem;
         padding: 2rem;
         a{
@@ -17,5 +19,12 @@ main{
                 font-size: 15rem;
             }
         }
+    }
+}
+
+@media (min-width: 1200px){
+    .home{
+        flex-direction: row;
+        justify-content: center;
     }
 }

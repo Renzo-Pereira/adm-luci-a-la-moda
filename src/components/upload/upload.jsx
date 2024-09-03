@@ -5,26 +5,30 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Upload = () => {
   const productosRef = collection(db, "productos");
-  const [titulo, setTitulo] = useState("");
+  const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
-  const [categoria, setCategoria] = useState("");
+  const [genero, setGenero] = useState("");
   const [imagen, setImagen] = useState(null);
+  const [imagen1, setImagen1] = useState(null);
+  const [imagen2, setImagen2] = useState(null);
   const [imagenUrl, setImagenUrl] = useState(null); // Agregar estado para la URL de la imagen
+  const [imagenUrl1, setImagenUrl1] = useState(null); // Agregar estado para la URL de la imagen
+  const [imagenUrl2, setImagenUrl2] = useState(null); // Agregar estado para la URL de la imagen
   const inputRef = useRef(null); // Referencia al input de tipo file
-  const [descripcion, setDescripcion] = useState('');
-  const [colores, setColores] = useState('');
-  const [tallesSeleccionados, setTallesSeleccionados] = useState([]);
+  const inputRef1 = useRef(null);
+  const inputRef2 = useRef(null);
+  const [descripcion, setDescripcion] = useState("");
 
-  const handleTituloChange = (event) => {
-    setTitulo(event.target.value);
+  const handleNombreChange = (event) => {
+    setNombre(event.target.value);
   };
 
   const handlePrecioChange = (event) => {
     setPrecio(event.target.value);
   };
 
-  const handleCategoriaChange = (event) => {
-    setCategoria(event.target.value);
+  const handleGeneroChange = (event) => {
+    setGenero(event.target.value);
   };
 
   const handleImagenChange = (event) => {
@@ -34,28 +38,34 @@ const Upload = () => {
       setImagenUrl(url); // Establecer la URL de la imagen en el estado
     }
   };
+  
+  const handleImagen1Change = (event) => {
+    if (event.target.files[0]) {
+      setImagen1(event.target.files[0]);
+      const url = URL.createObjectURL(event.target.files[0]); // Crear una URL para la imagen seleccionada
+      setImagenUrl1(url); // Establecer la URL de la imagen en el estado
+    }
+  };
+
+  const handleImagen2Change = (event) => {
+    if (event.target.files[0]) {
+      setImagen2(event.target.files[0]);
+      const url = URL.createObjectURL(event.target.files[0]);
+      setImagenUrl2(url);
+    }
+  };
 
   const handleFotoClick = () => {
     // Simular clic en el input de tipo file al hacer clic en el botón de foto
     inputRef.current.click();
   };
-
-  const handleChangeTalle = (event) => {
-    const talle = event.target.name;
-    const isChecked = event.target.checked;
-
-    if (isChecked) {
-      // Agrega el talle seleccionado
-      setTallesSeleccionados([...tallesSeleccionados, talle]);
-    } else {
-      // Elimina el talle no seleccionado
-      const updatedTalles = tallesSeleccionados.filter(item => item !== talle);
-      setTallesSeleccionados(updatedTalles);
-    }
+  
+  const handleFoto1Click = () => {
+    inputRef1.current.click();
   };
 
-  const handleChangeColores = (event) => {
-    setColores(event.target.value);
+  const handleFoto2Click = () => {
+    inputRef2.current.click();
   };
 
   const handleChangeDescripcion = (event) => {
@@ -74,25 +84,47 @@ const Upload = () => {
     const storageRef = ref(storage, `imagenes/${imagen.name}`);
     await uploadBytes(storageRef, imagen);
 
+    if (!imagen1) {
+      alert("Debes seleccionar una imagen");
+      return;
+    }
+
+    // Subir imagen a Firebase Storage
+    const storageRef1 = ref(storage, `imagenes/${imagen1.name}`);
+    await uploadBytes(storageRef1, imagen1);
+
+    if (!imagen2) {
+      alert("Debes seleccionar una imagen");
+      return;
+    }
+
+    // Subir imagen a Firebase Storage
+    const storageRef2 = ref(storage, `imagenes/${imagen2.name}`);
+    await uploadBytes(storageRef2, imagen2);
+
     // Obtener la URL de la imagen subida
-    const imageUrl = await getDownloadURL(storageRef);
+    const img = await getDownloadURL(storageRef);
+    const img1 = await getDownloadURL(storageRef1);
+    const img2 = await getDownloadURL(storageRef2);
 
     await addDoc(productosRef, {
-      titulo: titulo,
+      nombre: nombre,
       precio: precio,
-      categoria: categoria,
-      imagenUrl: imageUrl,
-      talles: tallesSeleccionados,
-      colores: colores,
+      genero: genero,
+      img: img,
+      img1: img1,
+      img2: img2,
       descripcion: descripcion,
     });
     // Limpiar los campos después de agregar el producto
-    setTitulo("");
+    setNombre("");
     setPrecio("");
     setImagen(null);
+    setImagen1(null);
+    setImagen2(null);
     setImagenUrl(null); // Limpiar la URL de la imagen
-    setTallesSeleccionados([]);
-    setColores("");
+    setImagenUrl1(null); 
+    setImagenUrl2(null); 
     setDescripcion("");
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -102,13 +134,13 @@ const Upload = () => {
   };
 
   return (
-    <div className="contenedor-agregar">
+    <main className="contenedor-agregar">
       <button
         className="foto"
         style={{ backgroundImage: `url(${imagenUrl})` }}
         onClick={handleFotoClick}
       >
-        {imagenUrl ? null : <i className="bi bi-folder-plus"></i>}
+        {imagenUrl ? null : <i className="bi bi-folder-plus"><p>Portada</p></i>}
         <input
           ref={inputRef}
           type="file"
@@ -118,13 +150,43 @@ const Upload = () => {
           style={{ display: "none" }} // Ocultar el input file
         />
       </button>
-      <div className="inputs">
-        <label htmlFor="titulo">Titulo</label>
+      <button
+        className="foto"
+        style={{ backgroundImage: `url(${imagenUrl1})` }}
+        onClick={handleFoto1Click}
+      >
+        {imagenUrl1 ? null : <i className="bi bi-folder-plus"><p>2da foto</p></i>}
         <input
-          name="titulo"
+          ref={inputRef1}
+          type="file"
+          id="imagen"
+          accept="image/*"
+          onChange={handleImagen1Change}
+          style={{ display: "none" }}
+        />
+      </button>
+      <button
+        className="foto"
+        style={{ backgroundImage: `url(${imagenUrl2})` }}
+        onClick={handleFoto2Click}
+      >
+        {imagenUrl2 ? null : <i className="bi bi-folder-plus"><p>3ra foto</p></i>}
+        <input
+          ref={inputRef2}
+          type="file"
+          id="imagen"
+          accept="image/*"
+          onChange={handleImagen2Change}
+          style={{ display: "none" }}
+        />
+      </button>
+      <article className="inputs">
+        <label htmlFor="nombre">Nombre</label>
+        <input
+          name="nombre"
           type="text"
-          value={titulo}
-          onChange={handleTituloChange}
+          value={nombre}
+          onChange={handleNombreChange}
         />
         <label htmlFor="precio">Precio</label>
         <input
@@ -133,53 +195,16 @@ const Upload = () => {
           value={precio}
           onChange={handlePrecioChange}
         />
-        <label htmlFor="categoria">Categoria</label>
-        <select
-          name="categoria"
-          value={categoria}
-          onChange={handleCategoriaChange}
-        >
-          <option value="vestido">Vestido</option>
-          <option value="short">Short</option>
-          <option value="remera">Remera</option>
-          <option value="musculosa">Musculosa</option>
+        <label htmlFor="genero">Genero</label>
+        <select name="genero" value={genero} onChange={handleGeneroChange}>
+          <option value="hombre">Hombre</option>
+          <option value="dama">Dama</option>
         </select>
-        <h3 className="contenedor-agregar-h3">Talles</h3>
-        <div className="contenedor-agregar-talles">
-          <label htmlFor="XXXS">XXXS</label>
-          <input onChange={handleChangeTalle} name="XXXS" type="checkbox" />
-          <label htmlFor="XXS">XXS</label>
-          <input onChange={handleChangeTalle} name="XXS" type="checkbox" />
-          <label htmlFor="XS">XS</label>
-          <input onChange={handleChangeTalle} name="XS" type="checkbox" />
-          <label htmlFor="S">S</label>
-          <input onChange={handleChangeTalle} name="S" type="checkbox" />
-          <label htmlFor="M">M</label>
-          <input onChange={handleChangeTalle} name="M" type="checkbox" />
-          <label htmlFor="L">L</label>
-          <input onChange={handleChangeTalle} name="L" type="checkbox" />
-          <label htmlFor="XL">XL</label>
-          <input onChange={handleChangeTalle} name="XL" type="checkbox" />
-          <label htmlFor="XXL">XXL</label>
-          <input onChange={handleChangeTalle} name="XXL" type="checkbox" />
-          <label htmlFor="XXXL">XXXL</label>
-          <input onChange={handleChangeTalle} name="XXXL" type="checkbox" />
-          <label htmlFor="XXXXL">XXXXL</label>
-          <input onChange={handleChangeTalle} name="XXXXL" type="checkbox" />
-          <label htmlFor="XXXXXL">XXXXXL</label>
-          <input onChange={handleChangeTalle} name="XXXXXL" type="checkbox" />
-          <label htmlFor="XXXXXXL">XXXXXXL</label>
-          <input onChange={handleChangeTalle} name="XXXXXXL" type="checkbox" />
-          <label htmlFor="XXXXXXXL">XXXXXXXL</label>
-          <input onChange={handleChangeTalle} name="XXXXXXXL" type="checkbox" />
-        </div>
-        <label>Colores</label>
-        <textarea value={colores} onChange={handleChangeColores}/>
         <label>Descripción</label>
-        <textarea value={descripcion} onChange={handleChangeDescripcion}/>
+        <textarea value={descripcion} onChange={handleChangeDescripcion} />
         <button onClick={handleSubmit}>Agregar</button>
-      </div>
-    </div>
+      </article>
+    </main>
   );
 };
 
