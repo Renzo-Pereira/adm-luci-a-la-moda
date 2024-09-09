@@ -19,7 +19,7 @@ const Files = () => {
 
   const handleDelete = async (id) => {
     await deleteDoc(doc(db, "productos", id));
-    setProductos(productos.filter((prod) => prod.id !== id)); // Remueve el producto eliminado del estado
+    setProductos(productos.filter((prod) => prod.id !== id)); 
   };
 
   return (

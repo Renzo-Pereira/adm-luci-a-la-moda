@@ -11,10 +11,10 @@ const Upload = () => {
   const [imagen, setImagen] = useState(null);
   const [imagen1, setImagen1] = useState(null);
   const [imagen2, setImagen2] = useState(null);
-  const [imagenUrl, setImagenUrl] = useState(null); // Agregar estado para la URL de la imagen
-  const [imagenUrl1, setImagenUrl1] = useState(null); // Agregar estado para la URL de la imagen
-  const [imagenUrl2, setImagenUrl2] = useState(null); // Agregar estado para la URL de la imagen
-  const inputRef = useRef(null); // Referencia al input de tipo file
+  const [imagenUrl, setImagenUrl] = useState(null); 
+  const [imagenUrl1, setImagenUrl1] = useState(null); 
+  const [imagenUrl2, setImagenUrl2] = useState(null); 
+  const inputRef = useRef(null); 
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
   const [descripcion, setDescripcion] = useState("");
@@ -34,16 +34,16 @@ const Upload = () => {
   const handleImagenChange = (event) => {
     if (event.target.files[0]) {
       setImagen(event.target.files[0]);
-      const url = URL.createObjectURL(event.target.files[0]); // Crear una URL para la imagen seleccionada
-      setImagenUrl(url); // Establecer la URL de la imagen en el estado
+      const url = URL.createObjectURL(event.target.files[0]); 
+      setImagenUrl(url); 
     }
   };
   
   const handleImagen1Change = (event) => {
     if (event.target.files[0]) {
       setImagen1(event.target.files[0]);
-      const url = URL.createObjectURL(event.target.files[0]); // Crear una URL para la imagen seleccionada
-      setImagenUrl1(url); // Establecer la URL de la imagen en el estado
+      const url = URL.createObjectURL(event.target.files[0]); 
+      setImagenUrl1(url); 
     }
   };
 
@@ -56,7 +56,6 @@ const Upload = () => {
   };
 
   const handleFotoClick = () => {
-    // Simular clic en el input de tipo file al hacer clic en el botón de foto
     inputRef.current.click();
   };
   
@@ -80,7 +79,7 @@ const Upload = () => {
       return;
     }
 
-    // Subir imagen a Firebase Storage
+
     const storageRef = ref(storage, `imagenes/${imagen.name}`);
     await uploadBytes(storageRef, imagen);
 
@@ -89,7 +88,7 @@ const Upload = () => {
       return;
     }
 
-    // Subir imagen a Firebase Storage
+
     const storageRef1 = ref(storage, `imagenes/${imagen1.name}`);
     await uploadBytes(storageRef1, imagen1);
 
@@ -98,11 +97,11 @@ const Upload = () => {
       return;
     }
 
-    // Subir imagen a Firebase Storage
+
     const storageRef2 = ref(storage, `imagenes/${imagen2.name}`);
     await uploadBytes(storageRef2, imagen2);
 
-    // Obtener la URL de la imagen subida
+
     const img = await getDownloadURL(storageRef);
     const img1 = await getDownloadURL(storageRef1);
     const img2 = await getDownloadURL(storageRef2);
@@ -116,13 +115,13 @@ const Upload = () => {
       img2: img2,
       descripcion: descripcion,
     });
-    // Limpiar los campos después de agregar el producto
+
     setNombre("");
     setPrecio("");
     setImagen(null);
     setImagen1(null);
     setImagen2(null);
-    setImagenUrl(null); // Limpiar la URL de la imagen
+    setImagenUrl(null);
     setImagenUrl1(null); 
     setImagenUrl2(null); 
     setDescripcion("");
@@ -147,7 +146,7 @@ const Upload = () => {
           id="imagen"
           accept="image/*"
           onChange={handleImagenChange}
-          style={{ display: "none" }} // Ocultar el input file
+          style={{ display: "none" }}
         />
       </button>
       <button
