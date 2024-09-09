@@ -18,9 +18,12 @@ const Upload = () => {
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
   const [descripcion, setDescripcion] = useState("");
+  const [slug, setSlug] = useState("");
 
   const handleNombreChange = (event) => {
-    setNombre(event.target.value);
+    const nombreValue = event.target.value;
+    setNombre(nombreValue);
+    setSlug(generateSlug(nombreValue)); // Genera el slug cuando cambia el nombre
   };
 
   const handlePrecioChange = (event) => {
@@ -38,7 +41,7 @@ const Upload = () => {
       setImagenUrl(url); 
     }
   };
-  
+
   const handleImagen1Change = (event) => {
     if (event.target.files[0]) {
       setImagen1(event.target.files[0]);
@@ -79,7 +82,6 @@ const Upload = () => {
       return;
     }
 
-
     const storageRef = ref(storage, `imagenes/${imagen.name}`);
     await uploadBytes(storageRef, imagen);
 
@@ -87,7 +89,6 @@ const Upload = () => {
       alert("Debes seleccionar una imagen");
       return;
     }
-
 
     const storageRef1 = ref(storage, `imagenes/${imagen1.name}`);
     await uploadBytes(storageRef1, imagen1);
@@ -97,10 +98,8 @@ const Upload = () => {
       return;
     }
 
-
     const storageRef2 = ref(storage, `imagenes/${imagen2.name}`);
     await uploadBytes(storageRef2, imagen2);
-
 
     const img = await getDownloadURL(storageRef);
     const img1 = await getDownloadURL(storageRef1);
@@ -114,6 +113,7 @@ const Upload = () => {
       img1: img1,
       img2: img2,
       descripcion: descripcion,
+      slug: slug // Incluye el slug en el documento
     });
 
     setNombre("");
@@ -125,6 +125,7 @@ const Upload = () => {
     setImagenUrl1(null); 
     setImagenUrl2(null); 
     setDescripcion("");
+    setSlug(""); // Limpiar el slug
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach((checkbox) => {
@@ -206,5 +207,12 @@ const Upload = () => {
     </main>
   );
 };
+
+function generateSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '');
+}
 
 export default Upload;
