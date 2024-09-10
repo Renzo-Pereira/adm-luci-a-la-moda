@@ -36,11 +36,21 @@ const ProductoRow = ({ prod, handleDelete }) => {
   const [precio, setPrecio] = useState(prod.precio);
   const [genero, setGenero] = useState(prod.genero);
   const [descripcion, setDescripcion] = useState(prod.descripcion);
+  const [slug, setSlug] = useState(prod.slug || generateSlug(prod.nombre));
   const [isChanged, setIsChanged] = useState(false);
 
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
   const handleNombreChange = (e) => {
-    setNombre(e.target.value);
-    checkChanges(e.target.value, precio, genero, descripcion);
+    const newName = e.target.value;
+    setNombre(newName);
+    setSlug(generateSlug(newName));
+    checkChanges(newName, precio, genero, descripcion);
   };
 
   const handlePrecioChange = (e) => {
@@ -78,27 +88,28 @@ const ProductoRow = ({ prod, handleDelete }) => {
       precio: parseFloat(precio),
       genero,
       descripcion,
+      slug,
     });
     setIsChanged(false);
   };
 
   return (
     <div className="productos-filas">
-      <img className="productos-img" src={prod.img} alt={prod.titulo} />
+      <img className="productos-img" src={prod.img} alt={prod.nombre} />
       <div className="productos-text">
-      <input name="nombre" type="text" value={nombre} onChange={handleNombreChange} />
-      <input name="precio" type="number" value={precio} onChange={handlePrecioChange} />
-      <select name="genero" value={genero} onChange={handleGeneroChange}>
-        <option value="hombre">Hombre</option>
-        <option value="dama">Dama</option>
-      </select>
-      <textarea value={descripcion} onChange={handleDescripcionChange} />
-      <button onClick={handleUpdate} disabled={!isChanged}>
-        Actualizar
-      </button>
-      <button type="button" onClick={() => handleDelete(prod.id)}>
-        <i className="bi bi-trash"></i>
-      </button>
+        <input name="nombre" type="text" value={nombre} onChange={handleNombreChange} />
+        <input name="precio" type="number" value={precio} onChange={handlePrecioChange} />
+        <select name="genero" value={genero} onChange={handleGeneroChange}>
+          <option value="hombre">Hombre</option>
+          <option value="dama">Dama</option>
+        </select>
+        <textarea value={descripcion} onChange={handleDescripcionChange} />
+        <button onClick={handleUpdate} disabled={!isChanged}>
+          Actualizar
+        </button>
+        <button type="button" onClick={() => handleDelete(prod.id)}>
+          <i className="bi bi-trash"></i>
+        </button>
       </div>
     </div>
   );
