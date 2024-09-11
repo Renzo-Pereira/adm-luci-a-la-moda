@@ -7,14 +7,15 @@ const Upload = () => {
   const productosRef = collection(db, "productos");
   const [nombre, setNombre] = useState("");
   const [precio, setPrecio] = useState("");
+  const [marca, setMarca] = useState("");
   const [genero, setGenero] = useState("");
   const [imagen, setImagen] = useState(null);
   const [imagen1, setImagen1] = useState(null);
   const [imagen2, setImagen2] = useState(null);
-  const [imagenUrl, setImagenUrl] = useState(null); 
-  const [imagenUrl1, setImagenUrl1] = useState(null); 
-  const [imagenUrl2, setImagenUrl2] = useState(null); 
-  const inputRef = useRef(null); 
+  const [imagenUrl, setImagenUrl] = useState(null);
+  const [imagenUrl1, setImagenUrl1] = useState(null);
+  const [imagenUrl2, setImagenUrl2] = useState(null);
+  const inputRef = useRef(null);
   const inputRef1 = useRef(null);
   const inputRef2 = useRef(null);
   const [descripcion, setDescripcion] = useState("");
@@ -23,7 +24,11 @@ const Upload = () => {
   const handleNombreChange = (event) => {
     const nombreValue = event.target.value;
     setNombre(nombreValue);
-    setSlug(generateSlug(nombreValue)); // Genera el slug cuando cambia el nombre
+    setSlug(generateSlug(nombreValue));
+  };
+
+  const handleMarcaChange = (event) => {
+    setMarca(event.target.value);
   };
 
   const handlePrecioChange = (event) => {
@@ -37,16 +42,16 @@ const Upload = () => {
   const handleImagenChange = (event) => {
     if (event.target.files[0]) {
       setImagen(event.target.files[0]);
-      const url = URL.createObjectURL(event.target.files[0]); 
-      setImagenUrl(url); 
+      const url = URL.createObjectURL(event.target.files[0]);
+      setImagenUrl(url);
     }
   };
 
   const handleImagen1Change = (event) => {
     if (event.target.files[0]) {
       setImagen1(event.target.files[0]);
-      const url = URL.createObjectURL(event.target.files[0]); 
-      setImagenUrl1(url); 
+      const url = URL.createObjectURL(event.target.files[0]);
+      setImagenUrl1(url);
     }
   };
 
@@ -61,7 +66,7 @@ const Upload = () => {
   const handleFotoClick = () => {
     inputRef.current.click();
   };
-  
+
   const handleFoto1Click = () => {
     inputRef1.current.click();
   };
@@ -107,25 +112,27 @@ const Upload = () => {
 
     await addDoc(productosRef, {
       nombre: nombre,
+      marca: marca,
       precio: precio,
       genero: genero,
       img: img,
       img1: img1,
       img2: img2,
       descripcion: descripcion,
-      slug: slug // Incluye el slug en el documento
+      slug: slug,
     });
 
     setNombre("");
+    setMarca("");
     setPrecio("");
     setImagen(null);
     setImagen1(null);
     setImagen2(null);
     setImagenUrl(null);
-    setImagenUrl1(null); 
-    setImagenUrl2(null); 
+    setImagenUrl1(null);
+    setImagenUrl2(null);
     setDescripcion("");
-    setSlug(""); // Limpiar el slug
+    setSlug("");
 
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     checkboxes.forEach((checkbox) => {
@@ -135,51 +142,65 @@ const Upload = () => {
 
   return (
     <main className="contenedor-agregar">
-      <button
-        className="foto"
-        style={{ backgroundImage: `url(${imagenUrl})` }}
-        onClick={handleFotoClick}
-      >
-        {imagenUrl ? null : <i className="bi bi-folder-plus"><p>Portada</p></i>}
-        <input
-          ref={inputRef}
-          type="file"
-          id="imagen"
-          accept="image/*"
-          onChange={handleImagenChange}
-          style={{ display: "none" }}
-        />
-      </button>
-      <button
-        className="foto"
-        style={{ backgroundImage: `url(${imagenUrl1})` }}
-        onClick={handleFoto1Click}
-      >
-        {imagenUrl1 ? null : <i className="bi bi-folder-plus"><p>2da foto</p></i>}
-        <input
-          ref={inputRef1}
-          type="file"
-          id="imagen"
-          accept="image/*"
-          onChange={handleImagen1Change}
-          style={{ display: "none" }}
-        />
-      </button>
-      <button
-        className="foto"
-        style={{ backgroundImage: `url(${imagenUrl2})` }}
-        onClick={handleFoto2Click}
-      >
-        {imagenUrl2 ? null : <i className="bi bi-folder-plus"><p>3ra foto</p></i>}
-        <input
-          ref={inputRef2}
-          type="file"
-          id="imagen"
-          accept="image/*"
-          onChange={handleImagen2Change}
-          style={{ display: "none" }}
-        />
-      </button>
+      <div>
+        <button
+          className="foto"
+          style={{ backgroundImage: `url(${imagenUrl})` }}
+          onClick={handleFotoClick}
+        >
+          {imagenUrl ? null : (
+            <i className="bi bi-folder-plus">
+              <p>Portada</p>
+            </i>
+          )}
+          <input
+            ref={inputRef}
+            type="file"
+            id="imagen"
+            accept="image/*"
+            onChange={handleImagenChange}
+            style={{ display: "none" }}
+          />
+        </button>
+        <button
+          className="foto"
+          style={{ backgroundImage: `url(${imagenUrl1})` }}
+          onClick={handleFoto1Click}
+        >
+          {imagenUrl1 ? null : (
+            <i className="bi bi-folder-plus">
+              <p>2da foto</p>
+            </i>
+          )}
+          <input
+            ref={inputRef1}
+            type="file"
+            id="imagen"
+            accept="image/*"
+            onChange={handleImagen1Change}
+            style={{ display: "none" }}
+          />
+        </button>
+        <button
+          className="foto"
+          style={{ backgroundImage: `url(${imagenUrl2})` }}
+          onClick={handleFoto2Click}
+        >
+          {imagenUrl2 ? null : (
+            <i className="bi bi-folder-plus">
+              <p>3ra foto</p>
+            </i>
+          )}
+          <input
+            ref={inputRef2}
+            type="file"
+            id="imagen"
+            accept="image/*"
+            onChange={handleImagen2Change}
+            style={{ display: "none" }}
+          />
+        </button>
+      </div>
       <article className="inputs">
         <label htmlFor="nombre">Nombre</label>
         <input
@@ -194,6 +215,13 @@ const Upload = () => {
           type="number"
           value={precio}
           onChange={handlePrecioChange}
+        />
+        <label htmlFor="marca">Marca</label>
+        <input
+          name="marca"
+          type="text"
+          value={marca}
+          onChange={handleMarcaChange}
         />
         <label htmlFor="genero">Genero</label>
         <select name="genero" value={genero} onChange={handleGeneroChange}>
@@ -211,8 +239,8 @@ const Upload = () => {
 function generateSlug(name) {
   return name
     .toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '');
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
 }
 
 export default Upload;

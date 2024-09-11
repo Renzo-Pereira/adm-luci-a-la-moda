@@ -33,6 +33,7 @@ const Files = () => {
 
 const ProductoRow = ({ prod, handleDelete }) => {
   const [nombre, setNombre] = useState(prod.nombre);
+  const [marca, setMarca] = useState(prod.marca);
   const [precio, setPrecio] = useState(prod.precio);
   const [genero, setGenero] = useState(prod.genero);
   const [descripcion, setDescripcion] = useState(prod.descripcion);
@@ -50,27 +51,33 @@ const ProductoRow = ({ prod, handleDelete }) => {
     const newName = e.target.value;
     setNombre(newName);
     setSlug(generateSlug(newName));
-    checkChanges(newName, precio, genero, descripcion);
+    checkChanges(newName, marca, precio, genero, descripcion);
+  };
+
+  const handleMarcaChange = (e) => {
+    setMarca(e.target.value);
+    checkChanges(nombre, e.target.value, precio, genero, descripcion);
   };
 
   const handlePrecioChange = (e) => {
     setPrecio(e.target.value);
-    checkChanges(nombre, e.target.value, genero, descripcion);
+    checkChanges(nombre, marca, e.target.value, genero, descripcion);
   };
 
   const handleGeneroChange = (e) => {
     setGenero(e.target.value);
-    checkChanges(nombre, precio, e.target.value, descripcion);
+    checkChanges(nombre, marca, precio, e.target.value, descripcion);
   };
 
   const handleDescripcionChange = (e) => {
     setDescripcion(e.target.value);
-    checkChanges(nombre, precio, genero, e.target.value);
+    checkChanges(nombre, marca, precio, genero, e.target.value);
   };
 
-  const checkChanges = (newNombre, newPrecio, newGenero, newDescripcion) => {
+  const checkChanges = (newNombre, newMarca, newPrecio, newGenero, newDescripcion) => {
     if (
       newNombre !== prod.nombre ||
+      newMarca !== prod.marca ||
       newPrecio !== prod.precio ||
       newGenero !== prod.genero ||
       newDescripcion !== prod.descripcion
@@ -85,6 +92,7 @@ const ProductoRow = ({ prod, handleDelete }) => {
     const productoRef = doc(db, "productos", prod.id);
     await updateDoc(productoRef, {
       nombre,
+      marca,
       precio: parseFloat(precio),
       genero,
       descripcion,
@@ -98,6 +106,7 @@ const ProductoRow = ({ prod, handleDelete }) => {
       <img className="productos-img" src={prod.img} alt={prod.nombre} />
       <div className="productos-text">
         <input name="nombre" type="text" value={nombre} onChange={handleNombreChange} />
+        <input name="marca" type="text" value={marca} onChange={handleMarcaChange} />
         <input name="precio" type="number" value={precio} onChange={handlePrecioChange} />
         <select name="genero" value={genero} onChange={handleGeneroChange}>
           <option value="hombre">Hombre</option>
